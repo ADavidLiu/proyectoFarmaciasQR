@@ -1,0 +1,142 @@
+body {
+  background-color: #356CC7;
+  font-family: 'Dosis', 'Helvetica', 'Arial', sans-serif;
+  padding-bottom: 30px; }
+
+::-moz-selection {
+  background-color: #356CC7;
+  color: white; }
+
+::selection {
+  background-color: #356CC7;
+  color: white; }
+
+.agregar-hover {
+  border-top-color: #356CC7 !important;
+  border-right-color: #356CC7 !important;
+  border-bottom-color: #356CC7 !important; }
+
+#titulo-wrapper {
+  background-color: white;
+  margin-bottom: 30px;
+  text-align: center;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2); 
+  position: relative;
+  z-index: 10;}
+  #titulo-wrapper #titulo {
+    padding: 0; }
+    #titulo-wrapper #titulo h1 {
+      color: #356CC7;
+      font-weight: 700;
+      text-transform: uppercase;
+      margin: 15px 5px;
+      font-size: 25px; }
+
+#formulario,
+#enviarEmail {
+  background-color: white;
+  padding: 30px;
+  border-bottom-left-radius: 6px;
+  border-bottom-right-radius: 6px; }
+  #formulario-titulo,
+  #enviarEmail-titulo {
+    background-color: #f2f2f2;
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px; }
+    #formulario-titulo h3,
+    #enviarEmail-titulo h3 {
+      margin: 15px 0;
+      color: #356CC7; }
+  #formulario input:not([type=submit]),
+  #enviarEmail input:not([type=submit]) {
+    margin-bottom: 15px;
+    height: 40px;
+    font-weight: 500;
+    border-radius: 6px;
+    border: 2px solid #f2f2f2;
+    -webkit-transition: all .25s;
+    transition: all .25s; }
+    #formulario input:not([type=submit]):focus, #formulario input:not([type=submit]):hover,
+    #enviarEmail input:not([type=submit]):focus,
+    #enviarEmail input:not([type=submit]):hover {
+      outline: none;
+      border-color: #356CC7;
+      color: #356CC7; }
+  #formulario div.medicamentos,
+  #enviarEmail div.medicamentos {
+    position: relative;
+    padding: 0; }
+  #formulario span.agregar,
+  #enviarEmail span.agregar {
+    border-top-right-radius: 6px;
+    border-bottom-right-radius: 6px;
+    background-color: #356CC7;
+    color: white;
+    height: 40px;
+    width: 40px;
+    position: absolute;
+    bottom: auto;
+    right: 0;
+    left: auto;
+    cursor: pointer;
+    -webkit-transition: all .25s;
+    transition: all .25s; }
+    #formulario span.agregar i,
+    #enviarEmail span.agregar i {
+      position: relative;
+      left: 50%;
+      -webkit-transform: translateX(-50%);
+      transform: translateX(-50%);
+      line-height: 40px; }
+  #formulario .input-wrapper-left,
+  #enviarEmail .input-wrapper-left {
+    padding-left: 0;
+    padding-right: 5px; }
+  #formulario .input-wrapper-right,
+  #enviarEmail .input-wrapper-right {
+    padding-right: 0;
+    padding-left: 5px; }
+
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0; }
+
+div#crear,
+div#enviar {
+  text-align: center;
+  cursor: pointer;
+  background-color: #356CC7;
+  color: white;
+  border: 2px solid #356CC7;
+  border-radius: 6px;
+  height: 60px;
+  margin-top: 20px; }
+  div#crear h3,
+  div#enviar h3 {
+    line-height: 55px;
+    padding: 0;
+    margin: 0; }
+
+.col-xs-12 {
+  min-height: 0; }
+
+.agregarPadding {
+  padding: 20px 0 !important;
+  background-color: white; }
+
+#qrcode-wrapper {
+  text-align: justify;
+  padding: 0; }
+  #qrcode-wrapper canvas {
+    padding-left: 0;
+    padding-right: 0;
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+    width: 256px; }
+
+#enviarEmail {
+  display: none; }
+  #enviarEmail h4 {
+    color: #356CC7; }
