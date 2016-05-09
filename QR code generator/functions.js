@@ -22,10 +22,22 @@ $(document).ready(function () {
         this.autorizacion = autorizacion;
         this.fechaConsulta = fechaConsulta;
         this.dosificacion = dosificacion;
+        this.entregado = false;
 
         this.generarCodigo = function () {
-            $("div#qrcode").qrcode(nombre1 + "|" + nombre2 + "|" + apellido1 + "|" + apellido2 + "|" + identificacion + "|" + edad + "|" + prioridad + "|" + autorizacion + "|" + medicamentos + "|" + fechaConsulta + "|" + dosificacion);
+            $("div#qrcode").qrcode(nombre1 + "|" + nombre2 + "|" + apellido1 + "|" + apellido2 + "|" + identificacion + "|" + edad + "|" + prioridad + "|" + autorizacion + "|" + medicamentos + "|" + fechaConsulta + "|" + dosificacion + "|" + this.entregado);
         }
+    }
+
+    function calcularFecha(prioridad, fechaConsulta) {
+        var diasNivel = parseInt(prioridad) - 1;
+        var diaConsulta = fechaConsulta.getDate();
+        var mesConsulta = fechaConsulta.getMonth();
+        var anoConsulta = fechaConsulta.getFullYear();
+
+        var fechaIngreso = new Date(anoConsulta, mesConsulta, diaConsulta + diasNivel);
+
+        return fechaIngreso;
     }
 
     $("div#crear").on("click", function () {
@@ -53,6 +65,7 @@ $(document).ready(function () {
         var email = $("input#email").val();
         var codigoqr = new Image();
         codigoqr.src = $canvasqr[0].toDataURL();
+        var fechaActual = calcularFecha(prioridad.val(), new Date($.now())).toDateString();
         $.post("php/enviarEmail.php", {
             destinatario: email,
             codigo: $canvasqr[0].toDataURL(),
@@ -63,7 +76,8 @@ $(document).ready(function () {
             edad: edad.val(),
             prioridad: prioridad.val(),
             id: identificacion.val(),
-            dosis: dosificacion.val()
+            dosis: dosificacion.val(),
+            fechaIngreso: fechaActual
         }, function (data) {
             alert(data);
         });

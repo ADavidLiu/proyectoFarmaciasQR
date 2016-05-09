@@ -9,34 +9,27 @@ $(document).ready(function () {
     // Asigna el primer valor 0 al número de pacientes en espera dentro de la farmacia
     numPacientesCampo.text(numPacientes);
 
-    var diasMeses = [
-        enero = 31,
-        febrero = 29,
-        marzo = 31,
-        abril = 30,
-        mayo = 31,
-        junio = 30,
-        julio = 31,
-        agosto = 31,
-        septiembre = 30,
-        octubre = 31,
-        noviembre = 30,
-        diciembre = 31
-    ];
-
     function calcularFecha(prioridad, fecha) {
         var fechaConsulta = new Date(fecha);
         var diasNivel = parseInt(prioridad) - 1;
-        //console.log("fecha consulta: " + fechaConsulta);
         var diaConsulta = fechaConsulta.getDate();
         var mesConsulta = fechaConsulta.getMonth();
         var anoConsulta = fechaConsulta.getFullYear();
 
-        //console.log("dia consulta: " + diaConsulta + "\nmes consulta: " + mesConsulta + "\naño consulta: " + anoConsulta + "\nprioridad: " + prioridad + "\ndia ingreso: " + (diaConsulta + diasNivel));
-        
         var fechaIngreso = new Date(anoConsulta, mesConsulta, diaConsulta + diasNivel);
-        
-        console.log("fecha ingreso: " + fechaIngreso);
+
+        return fechaIngreso;
+    }
+
+    function determinarEntrada(fechaIngreso) {
+        var fechaActual = new Date();
+        if (fechaIngreso.getDate() == fechaActual.getDate()) {
+            console.log("fecha actual: " + fechaActual + "\nfecha ingreso: " + fechaIngreso);
+            return true;
+        } else {
+            console.log("fecha actual: " + fechaActual + "\nfecha ingreso: " + fechaIngreso);
+            return false;
+        }
     }
 
     function actualizarNumPacientes(opcion) {
@@ -55,6 +48,41 @@ $(document).ready(function () {
         actualizarNumPacientes(0);
     }
 
+    function insertarPacienteFarmacia(campos) {
+        $.post("php/insertarPacienteFarmacia.php", {
+            nombre1: campos[0],
+            nombre2: campos[1],
+            apellido1: campos[2],
+            apellido2: campos[3],
+            id: campos[4],
+            edad: campos[5],
+            prioridad: campos[6],
+            autorizacion: campos[7],
+            fechaConsulta: campos[9],
+            entregado: campos[11],
+            medicamentos: campos[8]
+        }, function (resultado) {
+            console.log(resultado);
+        });
+    }
+    
+    function insertarPacienteEspera(campos) {
+        $.post("php/insertarPacienteEspera.php", {
+            emailIn: campos[12],
+            medicamentosIn: campos[8]
+        }, function () {
+            alert("Procesado");
+        });
+    }
+
+    function eliminarPacienteFarmacia(autorizacion) {
+        $.post("php/eliminarPacienteFarmacia.php", {
+            autorizacionIn: autorizacion
+        }, function (resultado) {
+            console.log(resultado);
+        });
+    }
+
     function agregarPaciente(resultadoCadena) {
         resultados.append(resultado);
 
@@ -69,8 +97,10 @@ $(document).ready(function () {
         var fechaConsulta = $(".resultados .resultado:last-child #fecha");
         var autorizacion = $(".resultados .resultado:last-child #autorizacion");
         var dosis = $(".resultados .resultado:last-child #dosis");
+        var entregado = $(".resultados .resultado:last-child #entregado");
+        var email = $(".resultados .resultado:last-child #email");
 
-        var campos = [nombre1, nombre2, apellido1, apellido2, id, edad, prioridad, autorizacion, medicamentos, fechaConsulta, dosis];
+        var campos = [nombre1, nombre2, apellido1, apellido2, id, edad, prioridad, autorizacion, medicamentos, fechaConsulta, dosis, entregado, email];
 
         for (i = 0; i < campos.length; i++) {
             campos[i].text(resultadoCadena[i]);
@@ -79,13 +109,19 @@ $(document).ready(function () {
         actualizarNumPacientes(1);
 
         $(".resultados .resultado:last-child .botones .entregar").click(function () {
+            // Eliminar de la interfaz.
             eliminarPaciente($(this));
-            // Aquí va el script de PHP para eliminar al paciente de la base de datos de pacientes dentro de la farmacia.
+            // Eliminar de la base de datos.
+            eliminarPacienteFarmacia(resultadoCadena[7]);
         });
 
         $(".resultados .resultado:last-child .botones .aplazar").click(function () {
+            // Eliminar de la interfaz.
             eliminarPaciente($(this));
-            // Aquí va el script de PHP para insertar al paciente a la base de datos de pacientes en espera de su medicamento y que se les mande un email de aviso.
+            // Eliminar de la base de datos.
+            eliminarPacienteFarmacia(resultadoCadena[7]);
+            // Añadirlo a la base de datos de pacientes en espera de un email de notificación.
+            insertarPacienteEspera(resultadoCadena[13], resultadoCadena[8]);
         });
     }
 
@@ -93,8 +129,16 @@ $(document).ready(function () {
         resultFunction: function (result) {
             var codigo = result.code;
             var resultadoCadena = codigo.split("|");
-            calcularFecha(resultadoCadena[6], resultadoCadena[9]);
-            agregarPaciente(resultadoCadena);
+            var fechaIngreso = calcularFecha(resultadoCadena[6], resultadoCadena[9]);
+            console.log("fecha ingreso enviada: " + fechaIngreso);
+            if (determinarEntrada(fechaIngreso)) {
+                // Agregar a la interfaz.
+                agregarPaciente(resultadoCadena);
+                // Agregar a la base de datos.
+                insertarPacienteFarmacia(resultadoCadena);
+            } else {
+                alert("Hoy no es su día asignado para reclamar su(s) medicamento(s)");
+            }
         }
     };
     $("canvas").WebCodeCamJQuery(arg).data().plugin_WebCodeCamJQuery.play();
