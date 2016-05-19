@@ -17,7 +17,7 @@
     $fecha = $_POST["fechaIngreso"];
 
     $direccion = 'email';
-    $clave = 'clave';
+    $clave = 'pass';
 
     $email = new PHPmailer();
     $email->isSMTP();

@@ -48,7 +48,7 @@ h3 {
     }
     .resultados,
     .resultados-titulo,
-    .resultado {
+    .notificaciones-titulo .resultado {
         border-radius: 6px;
         text-align: center;
     }
@@ -64,6 +64,8 @@ h3 {
     .resultado {
         border-bottom-left-radius: 0;
         border-bottom-right-radius: 0;
+        border-top-left-radius: 6px;
+        border-top-right-radius: 6px;
         background-color: white;
         margin-top: 30px;
         text-align: left;
@@ -111,7 +113,8 @@ h3 {
         background-color: #f2f2f2;
         box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
     }
-    .numPacientes {
+    .numPacientes,
+    .btnWrapper {
         border-radius: 6px;
         background-color: #f2f2f2;
         box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
@@ -121,6 +124,27 @@ h3 {
             font-size: 50px;
             color: #275195;
             font-weight: bold;
+        }
+    }
+    .btnWrapper {
+        background-color: transparent;
+        box-shadow: none;
+        padding: 0;
+        padding-left: 15px;
+        div {
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+            border-radius: 6px;
+            padding: 15px 5px;
+            cursor: pointer;
+            color: white;
+            font-size: 20px;
+        }
+        .btnResultados {
+            margin-bottom: 15px;
+            background-color: #16a085;
+        }
+        .btnNotificaciones {
+            background-color: #f39c12;
         }
     }
     input {
@@ -133,6 +157,52 @@ h3 {
             background-color: #275195;
             border: #275195;
         }
+    }
+}
+
+.divider {
+    height: 1px;
+    background-color: #f2f2f2;
+    margin-top: 30px;
+}
+
+.email#formulario {
+    padding: 15px;
+}
+
+#formulario input {
+    padding-left: 10px;
+}
+
+.notificaciones {
+    padding: 0;
+    text-align: center;
+    .notificaciones-titulo {
+        background-color: #f2f2f2;
+        padding: 15px;
+        border-radius: 6px;
+    }
+    #formulario {
+        border-top-left-radius: 6px;
+        border-top-right-radius: 6px;
+        border-bottom-left-radius: 0;
+        border-bottom-right-radius: 0;
+        margin-top: 30px;
+    }
+    .btnEnviar {
+        cursor: pointer;
+        background-color: #27ae60;
+        padding: 15px 5px;
+        color: white;
+        font-size: 20px;
+        border-bottom-left-radius: 6px;
+        border-bottom-right-radius: 6px;
+    }
+}
+
+@media screen and (max-width: 992px) {
+    .btnWrapper {
+        padding-left: 0 !important;
     }
 }
 

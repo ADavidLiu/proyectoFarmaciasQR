@@ -1,6 +1,9 @@
 $(document).ready(function () {
     var resultado = $(".resultado-wrapper").html();
     var resultados = $(".resultados");
+    var notificaciones = $(".notificaciones");
+    var btnResultados = $("div.btnResultados");
+    var btnNotificaciones = $("div.btnNotificaciones");
     var numPacientesCampo = $(".numPacientes h2");
     var numPacientes = 0;
 
@@ -60,18 +63,20 @@ $(document).ready(function () {
             autorizacion: campos[7],
             fechaConsulta: campos[9],
             entregado: campos[11],
-            medicamentos: campos[8]
+            medicamentos: campos[8],
+            indicaciones: campos[10]
         }, function (resultado) {
+            console.log("Agregado...");
             console.log(resultado);
         });
     }
-    
-    function insertarPacienteEspera(campos) {
+
+    function insertarPacienteEspera(email, medicamentos) {
         $.post("php/insertarPacienteEspera.php", {
-            emailIn: campos[12],
-            medicamentosIn: campos[8]
+            emailIn: email,
+            medicamentosIn: medicamentos
         }, function () {
-            alert("Procesado");
+            //alert("Procesado");
         });
     }
 
@@ -98,10 +103,9 @@ $(document).ready(function () {
         var autorizacion = $(".resultados .resultado:last-child #autorizacion");
         var dosis = $(".resultados .resultado:last-child #dosis");
         var entregado = $(".resultados .resultado:last-child #entregado");
-        var email = $(".resultados .resultado:last-child #email");
 
-        var campos = [nombre1, nombre2, apellido1, apellido2, id, edad, prioridad, autorizacion, medicamentos, fechaConsulta, dosis, entregado, email];
-
+        var campos = [nombre1, nombre2, apellido1, apellido2, id, edad, prioridad, autorizacion, medicamentos, fechaConsulta, dosis, entregado];
+        
         for (i = 0; i < campos.length; i++) {
             campos[i].text(resultadoCadena[i]);
         }
@@ -116,14 +120,68 @@ $(document).ready(function () {
         });
 
         $(".resultados .resultado:last-child .botones .aplazar").click(function () {
+            // Añadirlo a la base de datos de pacientes en espera de un email de notificación.
+            var emailEspera = $(".resultados .resultado:last-child input#emailEspera");
+            console.log("Email en espera: " + emailEspera.val());
+            insertarPacienteEspera(emailEspera.val(), resultadoCadena[8]);
             // Eliminar de la interfaz.
             eliminarPaciente($(this));
             // Eliminar de la base de datos.
             eliminarPacienteFarmacia(resultadoCadena[7]);
-            // Añadirlo a la base de datos de pacientes en espera de un email de notificación.
-            insertarPacienteEspera(resultadoCadena[13], resultadoCadena[8]);
         });
     }
+
+    setInterval(function () {
+        $.post("php/consultarPacientes.php", {}, function (pacientes) {
+            for (i = 0; i < pacientes[0].numPacientes; i++) {
+                var info = [pacientes[i].nombre1, pacientes[i].nombre2, pacientes[i].apellido1, pacientes[i].apellido2, pacientes[i].id, pacientes[i].edad, pacientes[i].prioridad, pacientes[i].autorizacion, pacientes[i].medicamentos, pacientes[i].fechaConsulta,
+                pacientes[i].indicaciones];
+                agregarPaciente(info);
+            }
+        });
+    }, 2000); // Cada 2 segundos
+
+    var btnEnviar = $(".btnEnviar");
+    var inputMedicamento = $(".notificaciones input");
+    var emails = [];
+
+    btnEnviar.click(function () {
+        var obtenerEmails = $.post("php/obtenerEmails.php", {
+            medicamento: inputMedicamento.val()
+        }, function (info) {
+            for (i = 0; i < info[0].numPacientes; i++) {
+                var email = info[i].email;
+                emails.push(email);
+            }
+        });
+
+        obtenerEmails.done(function () {
+            console.log(emails);
+            $.post("php/enviarEmail.php", {
+                emailsIn: emails,
+                medicamento: inputMedicamento.val()
+            }, function (info) {
+                alert(info);
+            });
+        });
+    });
+
+    // Ocultar inicialmente la sección de notificaciones
+    notificaciones.hide();
+
+    function cambiarSeccion(seccionNueva, seccionAntigua) {
+        seccionAntigua.fadeOut("fast", function () {
+            seccionNueva.fadeIn("fast");
+        });
+    }
+
+    btnNotificaciones.click(function () {
+        cambiarSeccion(notificaciones, resultados);
+    });
+
+    btnResultados.click(function () {
+        cambiarSeccion(resultados, notificaciones);
+    });
 
     var arg = {
         resultFunction: function (result) {
@@ -133,7 +191,7 @@ $(document).ready(function () {
             console.log("fecha ingreso enviada: " + fechaIngreso);
             if (determinarEntrada(fechaIngreso)) {
                 // Agregar a la interfaz.
-                agregarPaciente(resultadoCadena);
+                //agregarPaciente(resultadoCadena);
                 // Agregar a la base de datos.
                 insertarPacienteFarmacia(resultadoCadena);
             } else {

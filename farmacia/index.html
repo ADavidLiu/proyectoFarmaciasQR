@@ -32,9 +32,14 @@
                     <canvas></canvas>
                 </div>
 
-                <div class="numPacientes">
+                <div class="col-xs-12 col-md-6 numPacientes">
                     <h3>Número de pacientes</h3>
                     <h2>0</h2>
+                </div>
+
+                <div class="col-xs-12 col-md-6 btnWrapper">
+                    <div class="col-xs-12 btnResultados">Resultados</div>
+                    <div class="col-xs-12 btnNotificaciones">Notificaciones</div>
                 </div>
             </div>
 
@@ -99,15 +104,17 @@
                             <h4 class="col-xs-6 col-md-12">Indicaciones:</h4>
                             <h5 class="col-xs-6 col-md-12" id="dosis"></h5>
                         </div>
-                        
+
                         <div class="col-xs-12 col-sm-6 col-md-4">
                             <h4 class="col-xs-6 col-md-12">Entregado:</h4>
                             <h5 class="col-xs-6 col-md-12" id="entregado"></h5>
                         </div>
-                        
-                        <div class="col-xs-12 col-sm-6 col-md-4">
+
+                        <div class="divider col-xs-12"></div>
+
+                        <div class="col-xs-12 email" id="formulario">
                             <h4 class="col-xs-6 col-md-12">Email:</h4>
-                            <h5 class="col-xs-6 col-md-12" id="email"></h5>
+                            <input class="col-xs-12" placeholder="Email de notificación" type="text" id="emailEspera">
                         </div>
 
                         <div class="col-xs-12 botones">
@@ -116,6 +123,18 @@
                         </div>
                     </div>
                 </div>
+            </div>
+
+            <div class="col-xs-12 col-md-5 col-md-offset-7 col-lg-6 col-lg-offset-6 notificaciones">
+                <div class="col-xs-12 notificaciones-titulo">
+                    <h3>Notificaciones</h3>
+                </div>
+
+                <div class="col-xs-12 notificaciones-wrapper" id="formulario">
+                    <input class="col-xs-12" placeholder="Medicamento..." type="text" id="medicamentoNotificaciones">
+                </div>
+
+                <div class="col-xs-12 btnEnviar">Enviar emails</div>
             </div>
         </div>
     </section>

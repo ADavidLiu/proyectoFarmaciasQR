@@ -10,6 +10,7 @@
     $edad = $_POST["edad"];
     $prioridad = $_POST["prioridad"];
     $autorizacion = $_POST["autorizacion"];
+    $indicaciones = $_POST["indicaciones"];
 
     $fechaConsulta = $_POST["fechaConsulta"];
     $fechaConsulta = substr($fechaConsulta, 0, strpos($fechaConsulta, '('));
@@ -18,7 +19,7 @@
     $entregado = $_POST["entregado"];
     $medicamentos = $_POST["medicamentos"];
 
-    $sql = "INSERT INTO pacientes (nombre1, nombre2, apellido1, apellido2, identificacion, edad, prioridad, autorizacion, fechaConsulta, entregado, medicamentos, horaLlegada) VALUES ('$nombre1', '$nombre2', '$apellido1', '$apellido2', $id, $edad, $prioridad, '$autorizacion', '$fechaConsulta', $entregado, '$medicamentos', NOW())";
+    $sql = "INSERT INTO pacientes (nombre1, nombre2, apellido1, apellido2, identificacion, edad, prioridad, autorizacion, fechaConsulta, entregado, medicamentos, horaLlegada, indicaciones) VALUES ('$nombre1', '$nombre2', '$apellido1', '$apellido2', $id, $edad, $prioridad, '$autorizacion', '$fechaConsulta', $entregado, '$medicamentos', NOW(), '$indicaciones')";
 
     echo $conexion->query($sql);
     
