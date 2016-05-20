@@ -76,7 +76,7 @@ $(document).ready(function () {
             emailIn: email,
             medicamentosIn: medicamentos
         }, function () {
-            //alert("Procesado");
+            alert("Procesado");
         });
     }
 
@@ -105,7 +105,7 @@ $(document).ready(function () {
         var entregado = $(".resultados .resultado:last-child #entregado");
 
         var campos = [nombre1, nombre2, apellido1, apellido2, id, edad, prioridad, autorizacion, medicamentos, fechaConsulta, dosis, entregado];
-        
+
         for (i = 0; i < campos.length; i++) {
             campos[i].text(resultadoCadena[i]);
         }
@@ -192,8 +192,15 @@ $(document).ready(function () {
             if (determinarEntrada(fechaIngreso)) {
                 // Agregar a la interfaz.
                 //agregarPaciente(resultadoCadena);
+
                 // Agregar a la base de datos.
                 insertarPacienteFarmacia(resultadoCadena);
+                // Abre la puerta de la farmacia
+                $.post("php/comunicacionArduino.php", {
+                    mensaje: 1 // 1 - Abrir
+                }, function (resultado) {
+                    console.log(resultado); // Debería imprimir '1'
+                });
             } else {
                 alert("Hoy no es su día asignado para reclamar su(s) medicamento(s)");
             }
