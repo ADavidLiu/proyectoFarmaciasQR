@@ -88,6 +88,11 @@ $(document).ready(function () {
         });
     }
 
+    function generarCodigo(nombre1, nombre2, apellido1, apellido2, identificacion, edad, prioridad, autorizacion, medicamentos, fechaConsulta, dosificacion) {
+        $("div#qrcode").empty();
+        $("div#qrcode").qrcode(nombre1 + "|" + nombre2 + "|" + apellido1 + "|" + apellido2 + "|" + identificacion + "|" + edad + "|" + prioridad + "|" + autorizacion + "|" + medicamentos + "|" + fechaConsulta + "|" + dosificacion + "|" + false);
+    }
+
     function agregarPaciente(resultadoCadena) {
         resultados.append(resultado);
 
@@ -122,8 +127,31 @@ $(document).ready(function () {
         $(".resultados .resultado:last-child .botones .aplazar").click(function () {
             // Añadirlo a la base de datos de pacientes en espera de un email de notificación.
             var emailEspera = $(".resultados .resultado:last-child input#emailEspera");
-            console.log("Email en espera: " + emailEspera.val());
+            //console.log("Email en espera: " + emailEspera.val());
+            // Insertar el paciente a la base de datos de espera
             insertarPacienteEspera(emailEspera.val(), resultadoCadena[8]);
+            // Genera el nuevo código QR
+            generarCodigo(resultadoCadena[0], resultadoCadena[1], resultadoCadena[2], resultadoCadena[3], resultadoCadena[4], resultadoCadena[5], resultadoCadena[6], resultadoCadena[7], resultadoCadena[8], resultadoCadena[9], resultadoCadena[10]);
+            $canvasqr = $("canvas");
+            var codigoqr = new Image();
+            codigoqr.src = $canvasqr[0].toDataURL();
+            // Enviar un nuevo email con el nuevo código QR de ingreso para cualquier día (prioridad 0).
+            $.post("php/enviarCodigoEspera.php", {
+                codigo: $canvasqr[0].toDataURL(),
+                email: emailEspera.val(),
+                nombre1: resultadoCadena[0],
+                nombre2: resultadoCadena[1],
+                apellido1: resultadoCadena[2],
+                apellido2: resultadoCadena[3],
+                id: resultadoCadena[4],
+                edad: resultadoCadena[5],
+                prioridad: resultadoCadena[6],
+                autorizacion: resultadoCadena[7],
+                medicamentos: resultadoCadena[8],
+                dosis: resultadoCadena[10]
+            }, function (data) {
+                alert(data);
+            });
             // Eliminar de la interfaz.
             eliminarPaciente($(this));
             // Eliminar de la base de datos.
@@ -188,23 +216,27 @@ $(document).ready(function () {
             var codigo = result.code;
             var resultadoCadena = codigo.split("|");
             var fechaIngreso = calcularFecha(resultadoCadena[6], resultadoCadena[9]);
-            console.log("fecha ingreso enviada: " + fechaIngreso);
-            if (determinarEntrada(fechaIngreso)) {
-                // Agregar a la interfaz.
+            //console.log("fecha ingreso enviada: " + fechaIngreso);
+            console.log("Prioridad: " + resultadoCadena[6]);
+            // Si la fecha de entrada es la adecuada o si el nivel de prioridad es 0 (puede entrar cualquier día).
+            if (determinarEntrada(fechaIngreso) || resultadoCadena[6] == "0") {
+                // Agregar directamente a la interfaz.
                 //agregarPaciente(resultadoCadena);
 
                 // Agregar a la base de datos.
                 insertarPacienteFarmacia(resultadoCadena);
                 // Abre la puerta de la farmacia
                 $.post("php/comunicacionArduino.php", {
-                    mensaje: 1 // 1 - Abrir
+                    //mensaje: 1 // 1 - Abrir
                 }, function (resultado) {
-                    console.log(resultado); // Debería imprimir '1'
+                    //console.log(resultado); // Debería imprimir '1'
                 });
             } else {
                 alert("Hoy no es su día asignado para reclamar su(s) medicamento(s)");
             }
         }
     };
+
+    // Para "reproducir" la cámara
     $("canvas").WebCodeCamJQuery(arg).data().plugin_WebCodeCamJQuery.play();
 });

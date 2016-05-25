@@ -166,6 +166,13 @@ h3 {
     border-bottom-left-radius: 6px;
     border-bottom-right-radius: 6px; }
 
+div#qrcode {
+  position: fixed;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  visibility: hidden; }
+
 @media screen and (max-width: 992px) {
   .btnWrapper {
     padding-left: 0 !important; } }
